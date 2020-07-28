@@ -1,5 +1,7 @@
 from rest_framework.routers import SimpleRouter
 
+from wallets.views import WalletViewSet
+
 
 router = SimpleRouter()
-urlpatterns = router.urls
+router.register(r'', WalletViewSet)
