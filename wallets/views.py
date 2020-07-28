@@ -22,6 +22,6 @@ class WalletViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, GenericV
                 wallet.save(owner=request.user)
             except ValidationError:
                 return Response({'error': 'max number of wallets'}, status.HTTP_400_BAD_REQUEST)
-            return Response(wallet.data)
+            return Response(wallet.data, status.HTTP_201_CREATED)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
