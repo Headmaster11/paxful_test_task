@@ -23,3 +23,6 @@ class Transaction(models.Model):
             self.to_wallet.bts += self.amount
             self.to_wallet.save(force_update=True, force_insert=False)
         return super(Transaction, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return '{} -> {}'.format(self.from_wallet, self.to_wallet)

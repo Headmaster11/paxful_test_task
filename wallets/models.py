@@ -22,3 +22,6 @@ class Wallet(models.Model):
                 raise ValidationError('max number of wallets')
             self.pk = generate_wallet_address()
         return super(Wallet, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return self.address
