@@ -1,12 +1,14 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.conf import settings
+from django.forms import ValidationError
 
-from bitcoin import pubtoaddr
+from bitcoin import *
 
 
 def generate_wallet_address():
-    return pubtoaddr(settings.BITKOIN_PUBLIC_KEY)
+    my_private_key = random_key()
+    my_public_key = privtopub(my_private_key)
+    return pubtoaddr(my_public_key)
 
 
 class Wallet(models.Model):
@@ -17,5 +19,5 @@ class Wallet(models.Model):
     def save(self, *args, **kwargs):
         if self.id is None:
             if Wallet.objects.filter(owner=self.owner).count() >= 10:
-                return False
+                raise ValidationError('max number of wallets')
         return super(Wallet, self).save(self)

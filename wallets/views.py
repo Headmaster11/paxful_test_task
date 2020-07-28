@@ -1,3 +1,4 @@
+from django.forms import ValidationError
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -17,7 +18,10 @@ class WalletViewSet(mixins.CreateModelMixin, GenericViewSet):
     def create(self, request, *args, **kwargs):
         wallet = WalletSerializer(data=request.data)
         if wallet.is_valid():
-            wallet.save(owner=request.user)
-            return Response({'address': wallet.address})
+            try:
+                wallet.save(owner=request.user)
+            except ValidationError:
+                return Response({'error': 'max number of wallets'}, status.HTTP_400_BAD_REQUEST)
+            return Response({'address': wallet.data['address'], 'BTS': wallet.data['bts']})
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
