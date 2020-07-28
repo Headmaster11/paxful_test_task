@@ -12,12 +12,13 @@ def generate_wallet_address():
 
 
 class Wallet(models.Model):
+    address = models.CharField(max_length=100, primary_key=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     bts = models.PositiveIntegerField(default=1)
-    address = models.CharField(max_length=100, default=generate_wallet_address)
 
     def save(self, *args, **kwargs):
-        if self.id is None:
+        if self.pk == '':
             if Wallet.objects.filter(owner=self.owner).count() >= 10:
                 raise ValidationError('max number of wallets')
+            self.pk = generate_wallet_address()
         return super(Wallet, self).save(self)

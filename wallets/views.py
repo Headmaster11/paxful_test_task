@@ -9,7 +9,7 @@ from wallets.models import Wallet
 from wallets.serializers import WalletSerializer
 
 
-class WalletViewSet(mixins.CreateModelMixin, GenericViewSet):
+class WalletViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, GenericViewSet):
     queryset = Wallet.objects.all()
     serializer_class = WalletSerializer
     authentication_classes = [TokenAuthentication]
@@ -22,6 +22,6 @@ class WalletViewSet(mixins.CreateModelMixin, GenericViewSet):
                 wallet.save(owner=request.user)
             except ValidationError:
                 return Response({'error': 'max number of wallets'}, status.HTTP_400_BAD_REQUEST)
-            return Response({'address': wallet.data['address'], 'BTS': wallet.data['bts']})
+            return Response(wallet.data)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
