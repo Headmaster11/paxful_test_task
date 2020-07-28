@@ -14,7 +14,7 @@ def generate_wallet_address():
 class Wallet(models.Model):
     address = models.CharField(max_length=100, primary_key=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    bts = models.PositiveIntegerField(default=1)
+    bts = models.FloatField(default=1)
 
     def save(self, *args, **kwargs):
         if self.pk == '':

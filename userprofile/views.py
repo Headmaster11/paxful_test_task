@@ -10,7 +10,7 @@ from rest_framework import status
 @api_view(['POST'])
 def register(request):
     data = request.data
-    if User.objects.get(Q(email=data['email']) | Q(username=data['username'])):
+    if User.objects.filter(Q(email=data['email']) | Q(username=data['username'])).first():
         return Response({'error': 'already exists'}, status.HTTP_400_BAD_REQUEST)
     user = User.objects.create_user(
         username=data['username'],
