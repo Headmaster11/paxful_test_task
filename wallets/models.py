@@ -21,4 +21,4 @@ class Wallet(models.Model):
             if Wallet.objects.filter(owner=self.owner).count() >= 10:
                 raise ValidationError('max number of wallets')
             self.pk = generate_wallet_address()
-        return super(Wallet, self).save(self)
+        return super(Wallet, self).save(*args, **kwargs)
