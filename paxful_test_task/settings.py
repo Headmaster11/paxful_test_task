@@ -124,4 +124,4 @@ STATIC_URL = '/static/'
 
 
 # business constants
-PLATFORM_TRANSFER_CHARGE = 1.5
+PLATFORM_TRANSFER_CHARGE = 0.015

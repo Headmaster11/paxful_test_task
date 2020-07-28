@@ -7,3 +7,4 @@ class TransactionSerializer(ModelSerializer):
     class Meta:
         model = Transaction
         fields = '__all__'
+        extra_kwargs = {'platform_profit': {'required': False}}

@@ -1,5 +1,7 @@
 from rest_framework.routers import SimpleRouter
 
+from transactions.views import TransactionViewSet
+
 
 router = SimpleRouter()
-urlpatterns = router.urls
+router.register(r'', TransactionViewSet)
