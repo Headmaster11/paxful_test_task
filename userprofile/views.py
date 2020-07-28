@@ -9,13 +9,13 @@ from rest_framework import status
 @api_view(['POST'])
 def register(request):
     data = request.data
-    user = User.objects.create(
+    user = User.objects.create_user(
         username=data['username'],
         email=data['email'],
         password=data['password'],
     )
     token = Token.objects.create(user=user)
-    return Response(token.key, status=status.HTTP_201_CREATED)
+    return Response({'token': token.key}, status=status.HTTP_201_CREATED)
 
 
 @api_view(['POST'])
@@ -23,7 +23,7 @@ def login(request):
     data = request.data
     user = authenticate(username=data['username'], password=data['password'])
     if user:
-        token, _ = Token.objects.get_or_create(user=User.objects)
-        return Response(token)
+        token, _ = Token.objects.get_or_create(user=user)
+        return Response({'token': token.key})
     else:
         return Response(status=status.HTTP_401_UNAUTHORIZED)
