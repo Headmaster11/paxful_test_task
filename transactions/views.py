@@ -1,3 +1,9 @@
-from django.shortcuts import render
+from rest_framework.viewsets import ModelViewSet
 
-# Create your views here.
+from transactions.models import Transaction
+from transactions.serializers import TransactionSerializer
+
+
+class TransactionViewSet(ModelViewSet):
+    queryset = Transaction.objects.all()
+    serializer_class = TransactionSerializer

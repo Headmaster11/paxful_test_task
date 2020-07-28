@@ -1,3 +1,9 @@
-from django.shortcuts import render
+from rest_framework.viewsets import ModelViewSet
 
-# Create your views here.
+from wallets.models import Wallet
+from wallets.serializers import WalletSerializer
+
+
+class WalletViewSet(ModelViewSet):
+    queryset = Wallet.objects.all()
+    serializer_class = WalletSerializer
