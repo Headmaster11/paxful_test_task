@@ -17,6 +17,8 @@ class Transaction(models.Model):
             if self.from_wallet.owner != self.to_wallet.owner:
                 self.platform_profit = self.amount * settings.PLATFORM_TRANSFER_CHARGE
             self.from_wallet.bts -= self.amount + self.platform_profit
+            if self.from_wallet.bts < 0:
+                raise ValidationError('not enough bts')
             self.from_wallet.save(force_update=True, force_insert=False)
             self.to_wallet.bts += self.amount
             self.to_wallet.save(force_update=True, force_insert=False)
