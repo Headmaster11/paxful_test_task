@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.forms import ValidationError
 
-from bitcoin import *
+from bitcoin import random_key, privtopub, pubtoaddr
 
 
 def generate_wallet_address():
@@ -14,7 +14,7 @@ def generate_wallet_address():
 class Wallet(models.Model):
     address = models.CharField(max_length=100, primary_key=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    bts = models.FloatField(default=1)
+    bts = models.DecimalField(default=1, max_digits=30, decimal_places=8)
 
     def save(self, *args, **kwargs):
         if self.pk == '':

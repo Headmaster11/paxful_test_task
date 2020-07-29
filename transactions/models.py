@@ -9,8 +9,8 @@ from wallets.models import Wallet
 class Transaction(models.Model):
     from_wallet = models.ForeignKey(Wallet, on_delete=models.SET_NULL, null=True, related_name='transfer_from')
     to_wallet = models.ForeignKey(Wallet, on_delete=models.SET_NULL, null=True, related_name='transfer_to')
-    amount = models.FloatField()
-    platform_profit = models.FloatField(default=0)
+    amount = models.DecimalField(max_digits=30, decimal_places=8)
+    platform_profit = models.DecimalField(default=0, max_digits=100, decimal_places=15)
 
     def save(self, *args, **kwargs):
         if self.pk is None:
