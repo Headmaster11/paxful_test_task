@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
-from django.db.models import Q, Sum, Count
+from django.db.models import Q, Sum
 from django.conf import settings
 from rest_framework.decorators import api_view
 from rest_framework.authtoken.models import Token

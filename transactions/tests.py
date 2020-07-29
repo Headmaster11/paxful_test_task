@@ -44,6 +44,28 @@ class TransactionTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(1, Transaction.objects.count())
 
+    def test_create_transaction_wrong_amount(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
+        response = self.client.post('/transactions/', {
+            'from_wallet': self.wallet_1.address,
+            'to_wallet': self.wallet_2.address,
+            'amount': -0.1,
+        })
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(0, Transaction.objects.count())
+
+    def test_create_transaction_from_foreign_wallet(self):
+        user = User.objects.create_user(username='2', password='2')
+        wallet_3 = Wallet.objects.create(owner=user)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
+        response = self.client.post('/transactions/', {
+            'from_wallet': wallet_3.address,
+            'to_wallet': self.wallet_2.address,
+            'amount': -0.1,
+        })
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(0, Transaction.objects.count())
+
     def test_list_transactions(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
         self.client.post('/transactions/', self.request_data)
