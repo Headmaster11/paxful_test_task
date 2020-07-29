@@ -48,6 +48,12 @@ class TransactionTests(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
         self.client.post('/transactions/', self.request_data)
         self.client.post('/transactions/', self.request_data)
+        wallet_3 = Wallet.objects.create(owner=User.objects.create_user(username='2', password='2'))
+        self.client.post('/transactions/', {
+            'from_wallet': wallet_3.address,
+            'to_wallet': self.wallet_1.address,
+            'amount': 0.1
+        })
         response = self.client.get('/transactions/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 2)
