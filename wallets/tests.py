@@ -16,3 +16,10 @@ class WalletTest(APITestCase):
         response = self.client.post('/wallets/')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(1, Wallet.objects.count())
+
+    def test_retrieve_wallet(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
+        self.client.post('/wallets/')
+        wallet = Wallet.objects.last()
+        response = self.client.get('/wallets/{}/'.format(wallet.address))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
