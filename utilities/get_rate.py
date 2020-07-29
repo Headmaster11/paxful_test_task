@@ -1,5 +1,10 @@
 import requests
 import decimal
+import requests_cache
+from datetime import timedelta
+
+expire_after = timedelta(minutes=15)
+requests_cache.install_cache('demo_cache', expire_after=expire_after)
 
 
 def get_usd():
