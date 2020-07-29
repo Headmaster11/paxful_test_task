@@ -9,11 +9,14 @@ from transactions.models import Transaction
 from transactions.serializers import TransactionSerializer
 
 
-class TransactionViewSet(mixins.CreateModelMixin, GenericViewSet):
+class TransactionViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, GenericViewSet):
     queryset = Transaction.objects.all()
     serializer_class = TransactionSerializer
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Transaction.objects.filter(from_wallet__owner=self.request.user)
 
     def create(self, request, *args, **kwargs):
         data = request.data
