@@ -3,6 +3,7 @@ from rest_framework.test import APITestCase
 from rest_framework import status
 
 from wallets.models import Wallet
+from wallets.serializers import WalletSerializer
 
 
 class WalletTest(APITestCase):
@@ -23,3 +24,4 @@ class WalletTest(APITestCase):
         wallet = Wallet.objects.last()
         response = self.client.get('/wallets/{}/'.format(wallet.address))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, WalletSerializer(wallet).data)
