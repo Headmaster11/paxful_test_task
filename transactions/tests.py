@@ -43,3 +43,11 @@ class TransactionTests(APITestCase):
         response = self.client.post('/transactions/', self.request_data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(1, Transaction.objects.count())
+
+    def test_list_transactions(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
+        self.client.post('/transactions/', self.request_data)
+        self.client.post('/transactions/', self.request_data)
+        response = self.client.get('/transactions/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 2)
