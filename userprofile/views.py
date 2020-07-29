@@ -1,10 +1,13 @@
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
-from django.db.models import Q
+from django.db.models import Q, Sum, Count
+from django.conf import settings
 from rest_framework.decorators import api_view
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework import status
+
+from transactions.models import Transaction
 
 
 @api_view(['POST'])
@@ -32,3 +35,19 @@ def login(request):
         return Response({'token': token.key})
     else:
         return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
+@api_view(['GET'])
+def statistics(request):
+    token = request.META['HTTP_AUTHORIZATION']
+    if token == settings.ADMIN_TOKEN:
+        transactions = Transaction.objects.all()
+        total_transactions = transactions.count()
+        platform_profit = transactions.aggregate(Sum('platform_profit'))
+        return Response(
+            {
+                'total_transactions': total_transactions,
+                'platform_profit in BTS': platform_profit['platform_profit__sum']
+            })
+    else:
+        return Response(status=status.HTTP_403_FORBIDDEN)

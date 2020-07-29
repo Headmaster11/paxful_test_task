@@ -125,3 +125,4 @@ STATIC_URL = '/static/'
 
 # business constants
 PLATFORM_TRANSFER_CHARGE = 0.015
+ADMIN_TOKEN = 'cool_admin_token'
