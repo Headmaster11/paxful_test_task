@@ -1,17 +1,14 @@
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 
 from wallets.models import Wallet
-
-import requests
+from utilities.get_rate import get_usd
 
 
 class WalletSerializer(ModelSerializer):
     usd = SerializerMethodField()
 
     def get_usd(self, obj):
-        res = requests.get('https://blockchain.info/ticker')
-        exchange_rate = res.json()['USD']['last']
-        return exchange_rate * obj.bts
+        return get_usd() * obj.bts
 
     class Meta:
         model = Wallet
