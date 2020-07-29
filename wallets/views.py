@@ -22,7 +22,7 @@ class WalletViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, GenericV
     def get_queryset(self):
         if self.action == 'transactions':
             return Wallet.objects.all()
-        return Wallet.objects.filter(self.request.user)
+        return Wallet.objects.filter(owner=self.request.user)
 
     def create(self, request, *args, **kwargs):
         wallet = WalletSerializer(data=request.data)
