@@ -3,6 +3,7 @@ from rest_framework.test import APITestCase
 from rest_framework import status
 
 from wallets.models import Wallet
+from transactions.models import Transaction
 
 
 class TransactionTests(APITestCase):
@@ -12,22 +13,25 @@ class TransactionTests(APITestCase):
         self.token = res.data['token']
         self.wallet_1 = Wallet.objects.create(owner=user)
         self.wallet_2 = Wallet.objects.create(owner=user)
+        self.request_data = {
+            'from_wallet': self.wallet_1.address,
+            'to_wallet': self.wallet_2.address,
+            'amount': 0.1,
+        }
 
     def test_create_transaction_unauthorized(self):
-        response = self.client.post('/transactions/')
+        response = self.client.post('/transactions/', self.request_data)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(0, Transaction.objects.count())
 
     def test_create_transaction_no_data(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
         response = self.client.post('/transactions/')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(0, Transaction.objects.count())
 
     def test_create_transaction(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
-        data = {
-            'from_wallet': self.wallet_1.address,
-            'to_wallet': self.wallet_2.address,
-            'amount': 0.1,
-        }
-        response = self.client.post('/transactions/', data)
+        response = self.client.post('/transactions/', self.request_data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(1, Transaction.objects.count())
