@@ -21,16 +21,24 @@ class TransactionTests(APITestCase):
 
     def test_create_transaction_unauthorized(self):
         response = self.client.post('/transactions/', self.request_data)
+        wallet_1_before_request = self.wallet_1.bts
+        wallet_2_before_request = self.wallet_2.bts
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(0, Transaction.objects.count())
+        self.assertEqual(wallet_1_before_request, self.wallet_1.bts)
+        self.assertEqual(wallet_2_before_request, self.wallet_2.bts)
 
     def test_create_transaction_no_data(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
+        wallet_1_before_request = self.wallet_1.bts
+        wallet_2_before_request = self.wallet_2.bts
         response = self.client.post('/transactions/')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(0, Transaction.objects.count())
+        self.assertEqual(wallet_1_before_request, self.wallet_1.bts)
+        self.assertEqual(wallet_2_before_request, self.wallet_2.bts)
 
-    def test_create_transaction(self):
+    def test_create_transaction_between_own(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
         response = self.client.post('/transactions/', self.request_data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
